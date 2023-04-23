@@ -1,0 +1,516 @@
+import code.hot.ListNode;
+import code.hot.TreeNode;
+
+import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class Test {
+    private static ThreadLocal<Map<String, Integer>> threadLocal = new ThreadLocal<>();
+    static ReentrantLock reentrantLock = new ReentrantLock();
+    ListNode pre;
+
+
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        Map<Integer,Integer> map = new HashMap<>();
+        for(int i = 0;i<inorder.length;++i){
+            map.put(inorder[i],i);
+        }
+        return buildTree(preorder,0,preorder.length-1,0,preorder.length-1,map);
+    }
+    public TreeNode buildTree(int[] preorder,int preLeft,int preRight,int inLeft,int inright,Map<Integer,Integer> map){
+        if(preLeft>preRight){
+            return null;
+        }
+        int rootIndex = map.get(preorder[preLeft]);
+        TreeNode root = new TreeNode(preorder[preLeft]);
+        int leftSubTreeSize = rootIndex-inLeft;
+        root.left = buildTree(preorder,preLeft+1,preLeft+leftSubTreeSize,inLeft,rootIndex-1,map);
+        root.right = buildTree(preorder,preLeft+leftSubTreeSize+1,preRight,rootIndex+1,inright,map);
+        return root ;
+    }
+
+    public int longestOnes(int[] nums, int k) {
+        int left = 0;
+        int leftSum = 0, rightSum = 0;
+        int res = 0;
+        for (int right = 0; right < nums.length; ++right) {
+            rightSum += 1 - nums[right];
+            while (rightSum - leftSum > k) {
+                leftSum += nums[left++];
+            }
+            res = Math.max(res, right - left + 1);
+        }
+        return res;
+    }
+
+    public int lengthOfLIS(int[] nums) {
+
+        int[] dp = new int[nums.length];
+        int res = 1;
+        dp[0] = 1;
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i; j >= 0; ++j) {
+                dp[i] = 1;
+                if (nums[j] < nums[i]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+                res = Math.max(res, dp[i]);
+            }
+        }
+        return res;
+    }
+
+    public int maximumProduct(int[] nums) {
+        Arrays.sort(nums);
+        int len = nums.length;
+        int resRc1 = nums[0] * nums[1] * nums[2];
+        int resRc2 = nums[len - 1] * nums[len - 2] * nums[len - 3];
+        int resRc3 = nums[0] * nums[1] * nums[len - 1];
+        int resRc4 = nums[0] * nums[len - 1] * nums[len - 2];
+        return Math.max(Math.max(resRc1, resRc2), Math.max(resRc3, resRc4));
+    }
+
+    public int maxSubArray(int[] nums) {
+        int temp = nums[0];
+        int res = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            temp = Math.max(temp + nums[i], nums[i]);
+            res = Math.max(temp, res);
+        }
+        return res;
+    }
+
+    public int[][] generateMatrix(int n) {
+        int[][] res = new int[n][n];
+        int rowTop = 0, rowButton = n - 1;
+        int colLeft = 0, colRight = n - 1;
+        int num = 1;
+        while (rowTop != rowButton) {
+            for (int i = colLeft; i <= colRight; ++i) {
+                res[rowTop][i] = num++;
+            }
+            for (int i = rowTop + 1; i <= rowButton; ++i) {
+                res[i][colRight] = num++;
+            }
+            for (int i = colRight - 1; i >= colLeft; --i) {
+                res[rowButton][i] = num++;
+            }
+            for (int i = rowButton - 1; i >= rowTop + 1; --i) {
+                res[i][colLeft] = num++;
+            }
+            rowTop++;
+            rowButton--;
+            colLeft++;
+            colRight--;
+        }
+        return res;
+
+    }
+
+
+    public String decodeString(String s) {
+        Stack<Integer> stackNum = new Stack<>();
+        Stack<String> stackStr = new Stack<>();
+        char[] chars = s.toCharArray();
+        for (int i = 0; i < chars.length; ) {
+            if (chars[i] - '0' <= 9 && 0 <= chars[i] - '0') {
+                int num = s.charAt(i) - '0';
+                i++;
+                while (s.charAt(i) - '0' >= 0 && s.charAt(i) <= 9) {
+                    num = num * 10 + (s.charAt(i) - '0');
+                    i++;
+                }
+                stackNum.push(num);
+                i++;
+            }
+            if (chars[i] - 'a' < 26 && 0 <= chars[i] - 'a') {
+                int edge = i;
+                while (s.charAt(i) - 'a' < 26 && 0 <= s.charAt(i) - 'a') {
+                    i++;
+                }
+                stackStr.push(s.substring(edge, i));
+            }
+            if (chars[i] == ']') {
+                String str = stackStr.pop();
+                StringBuilder sb = new StringBuilder();
+                if (!stackNum.isEmpty()) {
+                    int num = stackNum.pop();
+                    while (num-- > 0) {
+                        sb.append(str);
+                    }
+                } else {
+                    sb.append(str);
+                }
+                stackStr.push(sb.toString());
+                i++;
+            }
+        }
+        while (stackStr.size() != 1) {
+            String pop1 = stackStr.pop();
+            String pop2 = stackStr.pop();
+            stackStr.push(pop2 + pop1);
+        }
+        return stackStr.pop();
+    }
+
+    public int fourSumCount(int[] nums1, int[] nums2, int[] nums3, int[] nums4) {
+        int res = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums1.length; i++) {
+            for (int j = 0; j < nums2.length; j++) {
+                int num = nums1[i] + nums2[j];
+                map.put(num, map.getOrDefault(-num, 0) + 1);
+            }
+        }
+        for (int i = 0; i < nums3.length; i++) {
+            for (int j = 0; j < nums4.length; j++) {
+                res += map.getOrDefault(nums3[i] + nums4[j], 0);
+            }
+        }
+        return res;
+    }
+
+    List<List<Integer>> combineRes = new ArrayList<>();
+
+    public List<List<Integer>> combine(int n, int k) {
+        processCombine(n, k, 1, new ArrayList<>());
+        return combineRes;
+    }
+
+    public void processCombine(int n, int k, int index, List<Integer> path) {
+        if (path.size() == k) {
+            combineRes.add(new ArrayList<>(path));
+        } else {
+            for (int i = index; i <= n; ++i) {
+                if (path.size() > k) continue;
+                path.add(i);
+                processCombine(n, k, i + 1, path);
+                path.remove(path.size() - 1);
+            }
+        }
+    }
+
+
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        Deque<TreeNode> deque = new ArrayDeque<>();
+        deque.addFirst(root);
+        int size = deque.size();
+        boolean reverse = false;
+        while (!deque.isEmpty()) {
+            Deque<Integer> resRc = new ArrayDeque<>();
+            while (size-- > 0) {
+                TreeNode treeNode = deque.pollLast();
+                if (reverse) {
+                    resRc.addLast(treeNode.val);
+                } else {
+                    resRc.addFirst(treeNode.val);
+                }
+                if (treeNode.left != null) {
+                    deque.addFirst(treeNode.left);
+                }
+                if (treeNode.right != null) {
+                    deque.addFirst(treeNode.right);
+                }
+            }
+            reverse = !reverse;
+            size = deque.size();
+            res.add(new ArrayList<>(resRc));
+        }
+        return res;
+
+    }
+
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        Deque<TreeNode> deque = new ArrayDeque<>();
+        deque.addFirst(root);
+        int size = deque.size();
+        while (!deque.isEmpty()) {
+            List<Integer> resRc = new ArrayList<>();
+            while (size-- > 0) {
+                TreeNode treeNode = deque.pollLast();
+                resRc.add(treeNode.val);
+                if (treeNode.left != null) {
+                    deque.addFirst(treeNode.left);
+                }
+                if (treeNode.right != null) {
+                    deque.addFirst(treeNode.right);
+                }
+            }
+            size = deque.size();
+            res.add(resRc);
+        }
+        return res;
+    }
+
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (map.containsKey(target - nums[i])) {
+                return new int[]{map.get(target - nums[i]), i};
+            }
+            map.put(nums[i], i);
+        }
+        return new int[]{-1, -1};
+    }
+
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        if (list1 == null) return list2;
+        if (list2 == null) return list1;
+        if (list1.val < list2.val) {
+            list1.next = mergeTwoLists(list1.next, list2);
+            return list1;
+        } else {
+            list2.next = mergeTwoLists(list1, list2.next);
+            return list2;
+        }
+    }
+
+
+    public int findKthLargest(int[] nums, int k) {
+        return processFindKthLargest(nums, 0, nums.length - 1, k - 1);
+
+    }
+
+    public int[] quickSortArray(int[] nums) {
+        quickSortProcess(nums, 0, nums.length - 1);
+        return nums;
+    }
+
+    public void quickSortProcess(int[] nums, int l, int r) {
+        if (l >= r) return;
+        int index = quickPartition(nums, l, r);
+        quickPartition(nums, l, index - 1);
+        quickPartition(nums, index + 1, r);
+    }
+
+    public int quickPartition(int[] nums, int l, int r) {
+        int target = l + (int) (Math.random() * (r - l));
+        swap(nums, target, r);
+        int edge = l - 1;
+        while (l < r) {
+            if (nums[l] < nums[r]) {
+                swap(nums, l, ++edge);
+            }
+            l++;
+        }
+        swap(nums, ++edge, r);
+        return edge;
+    }
+
+    public static List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length - 2; ++i) {
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+            int target = -nums[i];
+            for (int l = i + 1, r = nums.length - 1; l < r; ) {
+                if (nums[l] + nums[r] == target) {
+                    List<Integer> resRc = new ArrayList<>();
+                    resRc.add(nums[i]);
+                    resRc.add(nums[l]);
+                    resRc.add(nums[r]);
+                    res.add(resRc);
+                    l++;
+                    while (nums[l] == nums[l - 1]) l++;
+                } else if (nums[l] + nums[r] < 0) {
+                    l++;
+                } else {
+                    r--;
+                }
+            }
+        }
+        return res;
+    }
+
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode pre = new ListNode();
+        ListNode left = head;
+        ListNode right = null;
+        ListNode tail;
+        pre.next = head;
+        ListNode cur = head;
+
+        while (cur != null) {
+            for (int i = 1; i < k; ++i) {
+                if (cur.next != null) {
+                    cur = cur.next;
+                }
+            }
+            right = cur;
+            tail = right.next;
+            ListNode[] listNodes = reverseSub(left, right);
+            listNodes[0].next = pre;
+            if (tail != null) {
+                tail.next = listNodes[1];
+                left = tail;
+            }
+            pre = listNodes[1];
+        }
+        return pre;
+    }
+
+    public ListNode[] reverseSub(ListNode start, ListNode end) {
+        ListNode pre = null;
+        ListNode resE = start;
+        while (start != end) {
+            ListNode next = start.next;
+            start.next = pre;
+            pre = start;
+            start = next;
+        }
+        return new ListNode[]{start, resE};
+    }
+
+
+    public int processFindKthLargest(int[] nums, int l, int r, int k) {
+        int index = processPartition(nums, l, r);
+        if (index == k) return nums[index];
+        if (index < k) {
+            return processFindKthLargest(nums, index + 1, r, k);
+        } else {
+            return processFindKthLargest(nums, l, index - 1, k);
+        }
+    }
+
+    public int processPartition(int[] nums, int l, int r) {
+        int edge = l - 1;
+        while (l < r) {
+            if (nums[l] > nums[r]) {
+                swap(nums, ++edge, l);
+            }
+            l++;
+        }
+        swap(nums, ++edge, r);
+        return edge;
+
+    }
+
+    public void swap(int[] nums, int l, int r) {
+        int temp = nums[l];
+        nums[l] = nums[r];
+        nums[r] = temp;
+    }
+
+
+    public ListNode reverseList(ListNode head) {
+        ListNode pre = null;
+        while (head != null) {
+            ListNode next = head.next;
+            head.next = pre;
+            pre = head;
+            head = next;
+        }
+        return pre;
+    }
+
+    public static int lengthOfLongestSubstring(String s) {
+        char[] chars = s.toCharArray();
+        int[] map = new int[128];
+        int res = Integer.MIN_VALUE;
+        int edge = -1;
+        Arrays.fill(map, -1);
+        for (int i = 0; i < chars.length; i++) {
+            edge = Math.max(map[chars[i]], edge);
+            res = Math.max(res, i - edge);
+            map[chars[i]] = i;
+        }
+        return res;
+
+    }
+    //"aabaab"
+    public void func(int count1,int count2){
+        process1(count1,count2,"");
+        process2(count2,count1,"");
+
+    }
+    public void process1(int rest1,int rest2 ,String path) {
+        if (rest1 == 0 && rest2 == 0) {
+            System.out.println(path);
+            return;
+        }
+        if (rest1 < 0 || rest2 < 0) {
+            return;
+        }
+        if(rest2==0&&rest1<=2){
+            if(rest1==1)
+            process1(0, rest2, path + "a");
+            if(rest1==2)
+            process1(0, rest2, path + "aa");
+        }
+        process1(rest1 - 1, rest2-1, path + "ab");
+        process1(rest1 - 2, rest2-1, path + "aab");
+        process1(rest1-1, rest2 - 2, path + "abb");
+        process1(rest1-2, rest2 - 2, path + "aabb");
+    }
+    public void process2(int rest1,int rest2 ,String path) {
+        if (rest1 == 0 && rest2 == 0) {
+            System.out.println(path);
+            return;
+        }
+        if (rest1 < 0 || rest2 < 0) {
+            return;
+        }
+        if(rest2==0&&rest1<=2){
+            if(rest1==1)
+                process1(0, rest2, path + "b");
+            if(rest1==2)
+                process1(0, rest2, path + "bb");
+        }
+        process2(rest1 - 1, rest2-1, path + "ba");
+        process2(rest1 - 2, rest2-1, path + "bba");
+        process2(rest1-1, rest2 - 2, path + "baa");
+        process2(rest1-2, rest2 - 2, path + "bbaa");
+    }
+
+    public static void main(String[] args) {
+        Test test = new Test();
+        test.func(3, 2);
+    }
+
+
+
+    public boolean processPalindrome(ListNode head) {
+        if (head.next != null) {
+            return processPalindrome(head.next);
+        } else {
+            if (head.val != pre.val) {
+                return false;
+            }
+            pre = pre.next;
+        }
+        return true;
+    }
+
+
+    public boolean isPalindrome(ListNode head) {
+        pre = head;
+        return processPalindrome(head);
+    }
+
+
+    
+
+
+//
+//    public boolean isPalindrome(ListNode head) {
+//        pre = head;
+//        return process(head);
+//    }
+//
+//    public boolean process(ListNode head) {
+//        if (head != null) {
+//            if (!process(head.next)) {
+//                return false;
+//            }
+//            if (head.val != pre.val) {
+//                return false;
+//            }
+//            pre = pre.next;
+//
+//        }
+//        return true;
+//    }
+
+}

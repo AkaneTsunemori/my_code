@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util-3.0.xsd http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd"
+       default-lazy-init="true">
+    <context:annotation-config/>
+
+    <util:properties id="jdbc" location="classpath:jdbc.properties"/>
+
+    <bean id="featureDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+          destroy-method="close" lazy-init="false">
+        <property name="driverClass" value="#{jdbc['feature.jdbc.driverClassName']}"/>
+        <property name="jdbcUrl" value="#{jdbc['feature.jdbc.url']}"/>
+        <property name="user" value="#{jdbc['feature.jdbc.username']}"/>
+        <property name="password" value="#{jdbc['feature.jdbc.password']}"/>
+        <property name="initialPoolSize" value="#{jdbc['mysql.jdbc.initialPoolSize']}"/>
+        <property name="minPoolSize" value="#{jdbc['mysql.jdbc.minPoolSize']}"/>
+        <property name="maxPoolSize" value="#{jdbc['mysql.jdbc.maxPoolSize']}"/>
+        <property name="acquireIncrement" value="#{jdbc['mysql.jdbc.acquireIncrement']}"/>
+        <property name="maxIdleTime" value="#{jdbc['mysql.jdbc.maxIdleTime']}"/>
+        <property name="checkoutTimeout" value="#{jdbc['mysql.jdbc.checkoutTimeout']}"/>
+    </bean>
+
+<!--    <bean id="recsysSearchVectorJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">-->
+<!--        <property name="dataSource" ref="featureDataSource"/>-->
+<!--        <property name="queryTimeout" value="#{jdbc['mysql.jdbc.queryTimeout']}"/>-->
+<!--    </bean>-->
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="featureDataSource" />
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+    </bean>
+    <mybatis:scan base-package="com.suzumiya.dao" />
+<!--    <bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">-->
+<!--        <property name="mapperInterface" value="com.ximalaya.recsys.search.vector.common.dao" />-->
+<!--        <property name="sqlSessionFactory" ref="sqlSessionFactory" />-->
+<!--    </bean>-->
+
+</beans>

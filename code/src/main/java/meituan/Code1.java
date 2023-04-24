@@ -19,6 +19,7 @@ public class Code1 {
         }
     }
 
+    //注意一下partation的过程
     class Solution2 {
 
         public int[] sortArray(int[] nums) {
@@ -149,6 +150,7 @@ public class Code1 {
         }
     }
 
+    //对于链表的问题,需要注意的点是截断问题
     class Solution7 {
         public ListNode reverseBetween(ListNode head, int left, int right) {
             int reverseNum = right - left + 1;
@@ -463,6 +465,7 @@ public class Code1 {
             for (int i = 0; i < nums.length - 2; i++) {
                 if (i > 0 && nums[i] == nums[i - 1]) continue;
                 int target = -nums[i];
+                //注意点 在for循环里没有写l++,那么需要注意在其他的地方加上限制
                 for (int l = i + 1, r = nums.length - 1; l < r; ) {
                     if (l > i + 1 && nums[l] == nums[l - 1]) {
                         l++;

@@ -1,5 +1,6 @@
 package meituan;
 
+import code.hot.ListNode;
 import code.hot.TreeNode;
 
 import java.util.*;
@@ -142,39 +143,286 @@ public class Code3 {
 
     }
 
-    static  class Solution49 {
-        public static String reverseWords(String s) {
+    class Solution49 {
+        public String reverseWords(String s) {
             int l = 0;
 
-            int r = s.length()-1;
-            while(s.charAt(l)==' '){
+            int r = s.length() - 1;
+            while (s.charAt(l) == ' ') {
                 l++;
             }
-            while(s.charAt(r)==' '){
+            while (s.charAt(r) == ' ') {
                 r--;
             }
-            Deque<String>deque = new ArrayDeque<>();
+            Deque<String> deque = new ArrayDeque<>();
             int cur = l;
-            while(cur<r){
-                if(s.charAt(cur+1)==' '){
-                    deque.addFirst(s.substring(l,cur+1));
+            while (cur < r) {
+                if (s.charAt(cur + 1) == ' ') {
+                    deque.addFirst(s.substring(l, cur + 1));
                     cur++;
-                    while(s.charAt(cur)==' '){
+                    while (s.charAt(cur) == ' ') {
                         cur++;
                     }
-                    l =cur;
+                    l = cur;
+                } else {
+                    cur++;
                 }
-                cur++;
             }
-            deque.addFirst(s.substring(l,cur+1));
-            return String.join(" ",deque);
+            deque.addFirst(s.substring(l, cur + 1));
+            return String.join(" ", deque);
         }
 
     }
 
-    public static void main(String[] args) {
-        System.out.println(Solution49.reverseWords("F R  I   E    N     D      S      "));
+    static class Solution50 {
+        public static int climbStairs(int n) {
+            if (n <= 2) return n;
+            int[] dp = new int[n];
+            dp[0] = 1;
+            dp[1] = 2;
+            for (int i = 2; i < n; ++i) {
+                dp[i] = dp[i - 1] + dp[i - 2];
+            }
+            return dp[n - 1];
+        }
 
+        public static int climbStairs2(int n) {
+            if (n <= 2) return n;
+            int first = 1;
+            int second = 2;
+            int res = 0;
+            int cur = 2;
+            while (cur != n) {
+                res = first + second;
+                first = second;
+                second = res;
+                cur++;
+            }
+            return res;
+        }
+    }
+
+    static class Solution51 {
+        int res = 0;
+
+        public int diameterOfBinaryTree(TreeNode root) {
+            process(root);
+            return res;
+        }
+
+        public int process(TreeNode root) {
+            if (root == null) return 0;
+            int left = process(root.left);
+            int rigth = process(root.right);
+            res = Math.max(res, left + rigth);
+            return Math.max(left, rigth) + 1;
+        }
+    }
+
+    //输入：nums = [10,9,2,5,3,7,101,18]
+    //输出：4
+    //解释：最长递增子序列是 [2,3,7,101]，因此长度为 4 。
+    static class Solution52 {
+        public static int lengthOfLIS(int[] nums) {
+            int[] dp = new int[nums.length];
+            dp[0] = 1;
+            int res = dp[0];
+            for (int i = 1; i < nums.length; ++i) {
+                dp[i] = 1;
+                for (int j = i; j >= 0; --j) {
+                    if (nums[j] < nums[i]) {
+                        dp[i] = Math.max(dp[i], dp[j] + 1);
+                    }
+                }
+                res = Math.max(res, dp[i]);
+            }
+            return res;
+        }
+    }
+
+    static class Solution53 {
+        public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+            if (headA == headB) return headA;
+            ListNode nodeA = headA;
+            ListNode nodeB = headB;
+            while (nodeA != null && nodeB != null) {
+                nodeA = nodeA.next;
+                nodeB = nodeB.next;
+            }
+            if (nodeA == null) {
+                nodeA = headB;
+            } else {
+                nodeB = headA;
+            }
+            while (nodeA != null && nodeB != null) {
+                nodeA = nodeA.next;
+                nodeB = nodeB.next;
+            }
+            if (nodeA == null) {
+                nodeA = headB;
+            } else {
+                nodeB = headA;
+            }
+            while (nodeA != null && nodeB != null && nodeA != nodeB) {
+                nodeA = nodeA.next;
+                nodeB = nodeB.next;
+            }
+            return nodeA == nodeB ? nodeA : null;
+        }
+
+        public ListNode getIntersectionNode2(ListNode headA, ListNode headB) {
+            ListNode nodeA = headA;
+            ListNode nodeB = headB;
+            //如果没有交点,两个都走完两个链表到达终点null,退出循环
+            while (nodeA != nodeB) {
+                if (nodeA == null) {
+                    nodeA = headB;
+                } else {
+                    nodeA = nodeA.next;
+                }
+                if (nodeB == null) {
+                    nodeB = headA;
+                } else {
+                    nodeB = nodeB.next;
+                }
+            }
+            return nodeA;
+        }
+    }
+
+    static class Solution54 {
+        public static ListNode deleteDuplicates(ListNode head) {
+            ListNode cur = head;
+            while (cur != null && cur.next != null) {
+                while (cur.next != null && cur.val == cur.next.val) {
+                    cur.next = cur.next.next;
+                }
+                cur = cur.next;
+            }
+            return head;
+        }
+
+    }
+
+    static class Solution55 {
+        public boolean isSymmetric(TreeNode root) {
+            if (root == null) return true;
+            return process(root.left, root.right);
+        }
+
+        public boolean process(TreeNode left, TreeNode right) {
+            if (left == null && right == null) {
+                return true;
+            }
+            if (left == null) {
+                return false;
+            }
+            if (right == null) {
+                return false;
+            }
+            return left.val == right.val && process(left.left, right.right) && process(left.right, right.left);
+        }
+
+    }
+
+    static class Solution56 {
+        public int numIslands(char[][] grid) {
+            int M = grid.length;
+            int N = grid[0].length;
+            int count = 0;
+            for(int i = 0;i<M;++i){
+                for (int j = 0;j<N;++j){
+                    if(grid[i][j]==0){
+                        continue;
+                    }else {
+                        count++;
+                        process(grid ,i,j);
+                    }
+                }
+            }
+            return count;
+        }
+
+        private void process(char[][] grid, int i, int j) {
+            if(i<0||i==grid.length||j<0||j==grid[0].length)return;
+            grid[i][j]= 0;
+            process(grid,i+1,j);
+            process(grid,i-1,j);
+            process(grid,i,j+1);
+            process(grid,i,j-1);
+        }
+    }
+    static class Solution57 {
+        public int longestConsecutive(int[] nums) {
+            int res = 1;
+            Set<Integer>set = new HashSet<>();
+            for (int num : nums) {
+                set.add(num);
+            }
+            for (int num : nums) {
+                if(set.contains(num-1)){
+                    continue;
+                }
+                int count = 0;
+                while(set.contains(num++)){
+                    count++;
+                }
+                res = Math.max(count,res);
+            }
+            return res;
+        }
+    }
+    //同爬楼梯
+    static class Solution58 {
+
+    }
+    static class Solution59 {
+        public static String minWindow(String s, String t) {
+            Map<Character,Integer>ms = new HashMap<>();
+            Map<Character,Integer>mt = new HashMap<>();
+            for(int i = 0;i<t.length();++i){
+                mt.put(t.charAt(i),mt.getOrDefault(t.charAt(i),0)+1);
+            }
+            int cnt =1;
+            int count = Integer.MAX_VALUE;
+            int resL = 0;
+            int resR = 0;
+            int l = 0,r = 0;
+            for (; r < s.length();) {
+                while(!check(ms,mt)&&r < s.length()){
+                    ms.put(s.charAt(r),ms.getOrDefault(s.charAt(r),0)+1);
+                    r++;
+                    cnt++;
+                }
+                while(check(ms,mt)){
+                    if(count>cnt){
+                        count=cnt;
+                        resL =l;
+                        resR =r;
+
+                    }
+                    ms.put(s.charAt(l),ms.get(s.charAt(l))-1);
+                    l++;
+                    cnt--;
+                }
+
+            }
+            return s.substring(resL,resR+1);
+        }
+
+        private static boolean check(Map<Character, Integer> ms, Map<Character, Integer> mt) {
+            for (Map.Entry<Character, Integer> entry : mt.entrySet()) {
+                if(ms.getOrDefault(entry.getKey(),0)<entry.getValue()){
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    public static void main(String[] args) {
+//
+        Solution59.minWindow("a","a");
     }
 
 

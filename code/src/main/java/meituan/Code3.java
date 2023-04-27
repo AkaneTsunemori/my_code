@@ -372,11 +372,7 @@ public class Code3 {
             return res;
         }
     }
-    //同爬楼梯
     static class Solution58 {
-
-    }
-    static class Solution59 {
         public static String minWindow(String s, String t) {
             Map<Character,Integer>ms = new HashMap<>();
             Map<Character,Integer>mt = new HashMap<>();
@@ -420,9 +416,85 @@ public class Code3 {
         }
     }
 
+    static class Solution59 {
+        List<List<Integer>> res = new ArrayList<>();
+
+        public List<List<Integer>> subsets(int[] nums) {
+            process(nums, 0, new ArrayList<>());
+            return res;
+        }
+
+        public void process(int[] nums, int index, List<Integer> path) {
+            if (index == nums.length) {
+                res.add(new ArrayList<>(path));
+            } else {
+                process(nums, index + 1, path);
+                path.add(nums[index]);
+                process(nums, index + 1, path);
+                path.remove(path.size() - 1);
+            }
+        }
+    }
+    static class Solution60 {
+        public static String multiply(String num1, String num2) {
+            String res = "";
+            int N1 = num1.length();
+            int N2 = num2.length();
+            for (int i = 0; i< N1; ++i){
+                for(int j = 0; j< N2; ++j){
+                    String multiply = multiply(num1.charAt(i), num2.charAt(j), N1-i-1, N2-j-1);
+                    res = add(res,multiply);
+                }
+            }
+            return res;
+        }
+
+        public static String multiply(Character c1,Character c2,int i1,int i2){
+            int multi = (c1 - '0') * (c2 - '0');
+            int numOfZero = i1+i2;
+            StringBuilder sb = new StringBuilder();
+            if(multi==0)return "0";
+            sb.append(multi);
+            while(numOfZero-->0){
+                sb.append(0);
+            }
+            return sb.toString();
+
+        }
+        public static String add(String num1,String num2){
+            int l1= num1.length()-1;
+            int l2 = num2.length()-1;
+            StringBuilder sb = new StringBuilder();
+            int add = 0;
+            while(l1>=0&&l2>=0){
+                int sum = add + num1.charAt(l1--)-'0' + num2.charAt(l2--)-'0';
+                add =sum/10;
+                sb.append(sum%10);
+            }
+            while(l1>=0){
+                int sum = add + num1.charAt(l1--)-'0';
+                add =sum/10;
+                sb.append(sum%10);
+            }
+            while(l2>=0){
+                int sum = add +num2.charAt(l2--)-'0';
+                add =sum/10;
+                sb.append(sum%10);
+            }
+            if(add>0){
+                sb.append(add);
+            }
+            return sb.reverse().toString();
+        }
+    }
+
+
     public static void main(String[] args) {
 //
-        Solution59.minWindow("a","a");
+        System.out.println(Solution60.multiply("6","91"));
+        System.out.println(Solution60.multiply("123","456"));
+        System.out.println(Solution60.multiply("0","456"));
+
     }
 
 

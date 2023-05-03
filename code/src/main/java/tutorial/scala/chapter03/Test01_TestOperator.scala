@@ -1,6 +1,5 @@
 package tutorial.scala.chapter03
 
-import com.sun.javafx.scene.control.behavior.DatePickerBehavior
 
 object Test01_TestOperator {
   def main(args: Array[String]): Unit = {

@@ -21,7 +21,9 @@ public class Problem_0005_LongestPalindromicSubstring {
             while (i + pArr[i] < manacherCharArray.length && i - pArr[i] >= 0) {
                 if (manacherCharArray[i + pArr[i]] == manacherCharArray[i - pArr[i]]) {
                     pArr[i]++;
-                } else break;
+                } else {
+                    break;
+                }
             }
             if (i + pArr[i] > R) {
                 R = i + pArr[i];

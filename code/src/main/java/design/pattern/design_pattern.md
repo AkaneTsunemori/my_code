@@ -58,9 +58,18 @@ client 关联的的都是抽象的工厂(PizzaStore)和抽象的product(Pizza) ,
 
 ![img_11.png](img_11.png)
 
+![img_12.png](img_12.png)
 
+优化: 增加空指令, 在初始化指令槽的时候开始就设定为null command , 当具体执行setCommand的时候才set具体的指令
+![img_13.png](img_13.png)
+ 
+优化: 增加undo  ,每次执行命令的时 btnOnPressed 或者 btnOffPressed 
+方法在执行的时候讲当前的Command 赋值给undoCommand  调用完后将其设置为NullCommand, 如果需要定义多次undo,需要一个栈里存放command
+![img_14.png](img_14.png) 
 
+优化: 增加多次undo 和重做
 
+![img_15.png](img_15.png)
 
 
 

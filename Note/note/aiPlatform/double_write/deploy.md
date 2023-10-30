@@ -19,5 +19,18 @@ executeRunnable:
 
 - content_deploy_config 表 内容部署功能表: 每一个提交到服务的内容 和 对应的服务提供者
 
-|   content_name    |content_type    |deploy_service_provider    |deploy_transaction_id|    ext_config|    alert_status|
+|   content_name    |content_type    |deploy_service_provider    |deploy_transaction_id |    ext_config|    alert_status|
 |---|---|---|---|---|---|
+
+
+部署相关文件 oss 同步到 idc 
+示例: http://ops.ximalaya.com/droplet/offline/deploy_%E5%8F%8C%E5%86%99%E4%BB%BB%E5%8A%A1
+模型文件:
+outputDataset -> fileInfo -> path
+/reslib/droplet/model/warehouse/MTL/1.56/
+
+字典文件(老的特征组件里配置的):
+outputDataset ->featureConfigOutput -> configData -> dictInfos -> dynamicDictResult 
+eg: /reslib/droplet/generate/data/94434762/1625931911500/FEkqalboja/search_word_dic
+
+

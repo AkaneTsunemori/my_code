@@ -141,6 +141,7 @@ public class Code2 {
                 }
                 res.add(inner);
             } else {
+                //[0,0,0,1,9]
                 for (int i = index; i < nums.length; ++i) {
                     swap(nums, index, i);
 

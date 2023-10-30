@@ -6,14 +6,15 @@ import code.hot.ListNode;
 public class a005_25_reverseNodesInKGroup {
     public static void main(String[] args) {
         ListNode head = new ListNode(1);
-        ListNode temp =head;
-        for(int i = 2;i<=5;++i){
+        ListNode temp = head;
+        for (int i = 2; i <= 5; ++i) {
             head.next = new ListNode(i);
             head = head.next;
         }
         ListNode listNode = reverseKGroup(temp, 2);
         System.out.println("===");
     }
+
     public static ListNode reverseKGroup(ListNode head, int k) {
 
 //        用四个指针记录四个位置
@@ -22,10 +23,10 @@ public class a005_25_reverseNodesInKGroup {
         ListNode start = head;
         ListNode end = start;
         ListNode next = null;
-        while(end!=null){
-            for(int i = 1;i<k;++i){
+        while (end != null) {
+            for (int i = 1; i < k; ++i) {
                 end = end.next;
-                if(end==null)return resPre.next;
+                if (end == null) return resPre.next;
             }
             next = end.next;
             ListNode[] listNodes = reverseSubGroup(start, k);
@@ -51,7 +52,7 @@ public class a005_25_reverseNodesInKGroup {
             pre = head;
             head = next;
         }
-        return new ListNode[]{pre,hair};
+        return new ListNode[]{pre, hair};
     }
 
 

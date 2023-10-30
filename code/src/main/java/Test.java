@@ -11,22 +11,23 @@ public class Test {
 
 
     public TreeNode buildTree(int[] preorder, int[] inorder) {
-        Map<Integer,Integer> map = new HashMap<>();
-        for(int i = 0;i<inorder.length;++i){
-            map.put(inorder[i],i);
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < inorder.length; ++i) {
+            map.put(inorder[i], i);
         }
-        return buildTree(preorder,0,preorder.length-1,0,preorder.length-1,map);
+        return buildTree(preorder, 0, preorder.length - 1, 0, preorder.length - 1, map);
     }
-    public TreeNode buildTree(int[] preorder,int preLeft,int preRight,int inLeft,int inright,Map<Integer,Integer> map){
-        if(preLeft>preRight){
+
+    public TreeNode buildTree(int[] preorder, int preLeft, int preRight, int inLeft, int inright, Map<Integer, Integer> map) {
+        if (preLeft > preRight) {
             return null;
         }
         int rootIndex = map.get(preorder[preLeft]);
         TreeNode root = new TreeNode(preorder[preLeft]);
-        int leftSubTreeSize = rootIndex-inLeft;
-        root.left = buildTree(preorder,preLeft+1,preLeft+leftSubTreeSize,inLeft,rootIndex-1,map);
-        root.right = buildTree(preorder,preLeft+leftSubTreeSize+1,preRight,rootIndex+1,inright,map);
-        return root ;
+        int leftSubTreeSize = rootIndex - inLeft;
+        root.left = buildTree(preorder, preLeft + 1, preLeft + leftSubTreeSize, inLeft, rootIndex - 1, map);
+        root.right = buildTree(preorder, preLeft + leftSubTreeSize + 1, preRight, rootIndex + 1, inright, map);
+        return root;
     }
 
     public int longestOnes(int[] nums, int k) {
@@ -419,13 +420,15 @@ public class Test {
         return res;
 
     }
+
     //"aabaab"
-    public void func(int count1,int count2){
-        process1(count1,count2,"");
-        process2(count2,count1,"");
+    public void func(int count1, int count2) {
+        process1(count1, count2, "");
+        process2(count2, count1, "");
 
     }
-    public void process1(int rest1,int rest2 ,String path) {
+
+    public void process1(int rest1, int rest2, String path) {
         if (rest1 == 0 && rest2 == 0) {
             System.out.println(path);
             return;
@@ -433,18 +436,19 @@ public class Test {
         if (rest1 < 0 || rest2 < 0) {
             return;
         }
-        if(rest2==0&&rest1<=2){
-            if(rest1==1)
-            process1(0, rest2, path + "a");
-            if(rest1==2)
-            process1(0, rest2, path + "aa");
+        if (rest2 == 0 && rest1 <= 2) {
+            if (rest1 == 1)
+                process1(0, rest2, path + "a");
+            if (rest1 == 2)
+                process1(0, rest2, path + "aa");
         }
-        process1(rest1 - 1, rest2-1, path + "ab");
-        process1(rest1 - 2, rest2-1, path + "aab");
-        process1(rest1-1, rest2 - 2, path + "abb");
-        process1(rest1-2, rest2 - 2, path + "aabb");
+        process1(rest1 - 1, rest2 - 1, path + "ab");
+        process1(rest1 - 2, rest2 - 1, path + "aab");
+        process1(rest1 - 1, rest2 - 2, path + "abb");
+        process1(rest1 - 2, rest2 - 2, path + "aabb");
     }
-    public void process2(int rest1,int rest2 ,String path) {
+
+    public void process2(int rest1, int rest2, String path) {
         if (rest1 == 0 && rest2 == 0) {
             System.out.println(path);
             return;
@@ -452,23 +456,310 @@ public class Test {
         if (rest1 < 0 || rest2 < 0) {
             return;
         }
-        if(rest2==0&&rest1<=2){
-            if(rest1==1)
+        if (rest2 == 0 && rest1 <= 2) {
+            if (rest1 == 1)
                 process1(0, rest2, path + "b");
-            if(rest1==2)
+            if (rest1 == 2)
                 process1(0, rest2, path + "bb");
         }
-        process2(rest1 - 1, rest2-1, path + "ba");
-        process2(rest1 - 2, rest2-1, path + "bba");
-        process2(rest1-1, rest2 - 2, path + "baa");
-        process2(rest1-2, rest2 - 2, path + "bbaa");
+        process2(rest1 - 1, rest2 - 1, path + "ba");
+        process2(rest1 - 2, rest2 - 1, path + "bba");
+        process2(rest1 - 1, rest2 - 2, path + "baa");
+        process2(rest1 - 2, rest2 - 2, path + "bbaa");
     }
+
+    public String removeKdigits2(String num, int k) {
+        Stack<Integer> stack = new Stack<>();
+        for (int i = 0; i < num.length(); ++i) {
+            while (k != 0 && !stack.isEmpty() && stack.peek() > num.charAt(i)) {
+                stack.pop();
+                k--;
+            }
+            stack.push(Integer.valueOf(num.charAt(i)));
+        }
+        if (stack.isEmpty()) {
+            return "0";
+        }
+        StringBuilder sb = new StringBuilder();
+        while (!stack.isEmpty()) {
+            sb.append(stack.pop());
+        }
+        return String.valueOf(Integer.parseInt(sb.toString()));
+    }
+
+    class Solution {
+        public int reversePairs(int[] nums) {
+            if (nums == null || nums.length < 2) {
+                return 0;
+            }
+            return process(nums, 0, nums.length - 1);
+        }
+
+        // arr[L..R]既要排好序，也要求逆序对数量返回
+        // 所有merge时，产生的逆序对数量，累加，返回
+        // 左 排序 merge并产生逆序对数量
+        // 右 排序 merge并产生逆序对数量
+        public int process(int[] arr, int l, int r) {
+            if (l == r) {
+                return 0;
+            }
+            // l < r
+            int mid = l + ((r - l) >> 1);
+            return process(arr, l, mid) + process(arr, mid + 1, r) + merge(arr, l, mid, r);
+        }
+
+        public int merge(int[] arr, int L, int m, int R) {
+            int[] help = new int[R - L + 1];
+            int i = help.length - 1;
+            int p1 = m;
+            int p2 = R;
+            int res = 0;
+            while (p1 >= L && p2 > m) {
+                res += arr[p1] > arr[p2] ? (p2 - m) : 0;
+                help[i--] = arr[p1] > arr[p2] ? arr[p1--] : arr[p2--];
+            }
+            while (p1 >= L) {
+                help[i--] = arr[p1--];
+            }
+            while (p2 > m) {
+                help[i--] = arr[p2--];
+            }
+            for (i = 0; i < help.length; i++) {
+                arr[L + i] = help[i];
+            }
+            return res;
+        }
+    }
+
 
     public static void main(String[] args) {
-        Test test = new Test();
-        test.func(3, 2);
+
+        // 创建一个TreeMap来存储学生的分数，键是学生的姓名，值是分数
+        TreeMap<String, Integer> studentScores = new TreeMap<>();
+
+        // 添加学生分数
+        studentScores.put("Alice", 95);
+        studentScores.put("Charlie", 92);
+        studentScores.put("David", 78);
+        studentScores.put("Bob", 88);
+
+        studentScores.put("Eve", 100);
+
+        // 输出整个TreeMap，按键的字母顺序排序
+        System.out.println("All Students and Scores:");
+        for (Map.Entry<String, Integer> entry : studentScores.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+
+        // 获取某个学生的分数
+        String studentName = "Bob";
+        if (studentScores.containsKey(studentName)) {
+            int score = studentScores.get(studentName);
+            System.out.println(studentName + "'s Score: " + score);
+        } else {
+            System.out.println("Student not found.");
+        }
+
+        // 获取分数在一定范围内的学生
+        System.out.println("Students with Scores between 90 and 95:");
+        SortedMap<String, Integer> studentsInRange = studentScores.subMap("Alice", "David");
+        for (Map.Entry<String, Integer> entry : studentsInRange.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
     }
 
+    public int jump(int[] nums) {
+        int[] dp = new int[nums.length];
+        dp[0] = nums[0];
+        int max = dp[0];
+        for (int i = 0; i < nums.length; i++) {
+            dp[i] = max >= i ? nums[i] + i : 0;
+            max = Math.max(max, nums[i] + 1);
+        }
+        int target = nums.length - 1;
+        int count = 0;
+        while (target != 0) {
+            for (int i = 0; i < dp.length; i++) {
+                if (dp[i] >= target) {
+                    count++;
+                    target = i;
+                    break;
+                }
+            }
+        }
+        return count;
+
+    }
+
+
+    public int searchEqOrSmall(int[] nums, int target) {
+        int l = 0;
+        int r = nums.length - 1;
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            }
+            if (nums[mid] < target) {
+                l = mid + 1;
+            } else {
+                r = mid - 1;
+            }
+        }
+        return r;
+    }
+
+    public int searchEqOrBig(int[] nums, int target) {
+        int l = 0;
+        int r = nums.length - 1;
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            }
+            if (nums[mid] < target) {
+                l = mid + 1;
+            } else {
+                r = mid - 1;
+            }
+        }
+        return r;
+    }
+
+    static class Node {
+        int val;
+        Node next;
+        Node random;
+
+        public Node(int val) {
+            this.val = val;
+            this.next = null;
+            this.random = null;
+        }
+    }
+
+    public Node copyRandomList(Node head) {
+        Node cur = head;
+        while (cur != null) {
+            Node next = cur.next;
+            cur.next = new Node(cur.val);
+            cur.next.next = next;
+            cur = next;
+        }
+        cur = head;
+        while (cur != null) {
+            Node fake = cur.next;
+            fake.random = cur.random == null ? null : cur.random.next;
+            cur = cur.next.next;
+        }
+        cur = head;
+        Node rst = head.next;
+        while (cur != null) {
+            Node fake = cur.next;
+            fake.next = cur.next == null ? null : fake.next.next;
+            cur.next = cur.next.next;
+            cur = fake.next;
+        }
+        return rst;
+    }
+
+    public String reverseWords(String s) {
+        StringBuilder sb = new StringBuilder();
+        int len = s.length();
+        int l = len - 1;
+        int r = len - 1;
+        while (r > 0) {
+            if (s.charAt(r) != ' ') {
+                l = r;
+                while (l > 0 && s.charAt(l - 1) != ' ') {
+                    l--;
+                }
+                sb.append(s.substring(l, r + 1)).append(' ');
+                r = l;
+            } else {
+                r--;
+            }
+        }
+        return sb.substring(0, sb.length() - 1).toString();
+    }
+
+    public String minWindow(String s, String t) {
+        Map<Character, Integer> srcMap = new HashMap<>();
+        for (int i = 0; i < t.length(); i++) {
+            srcMap.put(t.charAt(i), srcMap.getOrDefault(t.charAt(i), 0) + 1);
+        }
+        int l = 0, r = 0;
+        int len = Integer.MAX_VALUE;
+        String rst = "";
+        Map<Character, Integer> targetMap = new HashMap<>();
+        while (r < s.length()) {
+            while (r < s.length() && !valid(srcMap, targetMap)) {
+                char c = s.charAt(r);
+                if (srcMap.containsKey(c)) {
+                    targetMap.put(c, targetMap.getOrDefault(c, 0) + 1);
+                }
+                r++;
+            }
+            while (valid(srcMap, targetMap) && l <= r) {
+                if (len > r - l) {
+                    len = r - l;
+                    rst = s.substring(l, r);
+                }
+                char c = s.charAt(l);
+                if (srcMap.containsKey(c)) {
+                    int val = targetMap.get(c);
+                    if (val > 1) {
+                        targetMap.put(c, val - 1);
+                    } else {
+                        targetMap.remove(c);
+                    }
+                }
+                l++;
+            }
+        }
+        return rst;
+    }
+
+    public boolean valid(Map<Character, Integer> srcMap, Map<Character, Integer> targetMap) {
+        for (Map.Entry<Character, Integer> entry : srcMap.entrySet()) {
+            if (targetMap.get(entry.getKey()) == null || targetMap.get(entry.getKey()) < entry.getValue()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public ListNode reverseList2(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        } else {
+            ListNode next = head.next;
+            //漏掉这一步会导致前两个节点成环
+            head.next = null;
+            //递归获取最后一个节点
+            ListNode last = reverseList2(next);
+            //反转
+            next.next = head;
+            return last;
+        }
+
+    }
+
+    public int mySqrt(int x) {
+        int l = 0;
+        int r = x;
+        int rst = 0;
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if ((long) (mid * mid) <= x) {
+                rst = mid;
+                l = mid + 1;
+            } else {
+                r = mid - 1;
+            }
+        }
+        return rst;
+    }
 
 
     public boolean processPalindrome(ListNode head) {
@@ -488,9 +779,6 @@ public class Test {
         pre = head;
         return processPalindrome(head);
     }
-
-
-    
 
 
 //

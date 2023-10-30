@@ -1,12 +1,18 @@
 package code.hot.z;
 
+import java.util.PriorityQueue;
+import java.util.Queue;
+
 public class z_55_JumpGame {
-    public  boolean canJump(int[] nums) {
-        int max = nums[0];
-        for(int i = 1;i<nums.length;++i){
-            max = Math.max(max,nums[i]+i);
-            if(max>=nums.length-1)return  true;
+    public int[] inventoryManagement(int[] stock, int cnt) {
+        Queue<Integer> queue = new PriorityQueue<>(cnt);
+        for (int i = 0; i < stock.length; i++) {
+            queue.offer(stock[i]);
         }
-        return false;
+        int[]rst = new int[cnt];
+        for (int i = 0; i < cnt; i++) {
+            rst[i] = queue.poll();
+        }
+        return rst;
     }
 }

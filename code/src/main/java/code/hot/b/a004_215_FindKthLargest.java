@@ -11,36 +11,39 @@ package code.hot.b;
 public class a004_215_FindKthLargest {
 
     public int findKthLargest(int[] nums, int k) {
-        return process(nums, k,0,nums.length-1);
+        return process(nums, k, 0, nums.length - 1);
     }
-    public int process(int[] arr, int k ,int l,int r){
+
+    public int process(int[] arr, int k, int l, int r) {
         int index = partitionResverse(arr, l, r);
-        if(index==k)return arr[index];
-        if(index>k){
-            return process(arr,k,l,k-1);
-        }else {
-            return process(arr,k,k+1,r);
+        if (index == k) return arr[index];
+        if (index > k) {
+            return process(arr, k, l, k - 1);
+        } else {
+            return process(arr, k, k + 1, r);
         }
     }
-    public static int partitionResverse(int[] arr, int l,int r){
-        int leftEdge = l-1;
-        while(l<r){
-            if(arr[l]>arr[r]){
-                swap(arr,++leftEdge,l);
+
+    public static int partitionResverse(int[] arr, int l, int r) {
+        int leftEdge = l - 1;
+        while (l < r) {
+            if (arr[l] > arr[r]) {
+                swap(arr, ++leftEdge, l);
             }
             l++;
         }
-        swap(arr,++leftEdge,r);
+        swap(arr, ++leftEdge, r);
         return leftEdge;
     }
-    public static void swap(int[] arr, int l,int r){
+
+    public static void swap(int[] arr, int l, int r) {
         int temp = arr[l];
-        arr[l ] = arr[r];
-        arr[r] =temp ;
+        arr[l] = arr[r];
+        arr[r] = temp;
     }
 
     public static void main(String[] args) {
-        System.out.println(partitionResverse(new int[]{6,7,8,9,10,5,2,3,4,5}, 0, 9));
+        System.out.println(partitionResverse(new int[]{6, 7, 8, 9, 10, 5, 2, 3, 4, 5}, 0, 9));
     }
 
 }

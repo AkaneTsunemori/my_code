@@ -18,6 +18,7 @@
        default-lazy-init="true">
     <context:annotation-config/>
 
+    <import resource="application-jdbc-context.xml"/>
 
 
 </beans>

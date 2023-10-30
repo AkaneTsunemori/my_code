@@ -14,7 +14,6 @@ public class TraitCollectService {
     @Autowired
     ITraitCollectDao traitCollectDao;
 
-    @Transactional
     public void insertOrUpdate(TraitCollect traitCollect){
         List<TraitCollect> allByJobComponent = traitCollectDao.findAllByJobComponent(traitCollect);
         if (allByJobComponent.isEmpty()){

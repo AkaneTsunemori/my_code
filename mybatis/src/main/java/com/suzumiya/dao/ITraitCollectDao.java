@@ -20,7 +20,7 @@ public interface ITraitCollectDao {
     List<TraitCollect> findAllByJobComponent(TraitCollect traitCollect);
 
 
-    @Update("update online_trait_collect set trait=#{traits},gmt_modified=now() where job=#{job} and component_name=#{componentName}")
+    @Update("update online_trait_collect set traits=#{traits},gmt_modified=now() where job=#{job} and component_name=#{componentName}")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     int update(TraitCollect traitCollect);
 

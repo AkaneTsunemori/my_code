@@ -29,10 +29,5 @@ public class a_50_239_max_sliding_window {
     }
 
     public static void main(String[] args) {
-        System.out.println(Arrays.toString(maxSlidingWindow(new int[]{1, -1}, 1)));
-        System.out.println(Arrays.toString(maxSlidingWindow(new int[]{1, 3,-1,-3,5,3,6,7}, 3)));
-        System.out.println(Arrays.toString(maxSlidingWindow(new int[]{7,2,4}, 2)));
-
-
     }
 }
